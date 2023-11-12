@@ -2,7 +2,10 @@
 # Slade Brooks
 # brooksl@mail.uc.edu
 # stolen from prof sharma
-
+# import sys
+# import os
+# cwd = os.getcwd()
+# sys.path.append(cwd)
 import numpy as np
 
 
