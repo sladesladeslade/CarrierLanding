@@ -1,5 +1,5 @@
 import numpy as np
-import signalGenerator as sig
+import lib.signalGenerator as sig
 
 class carrier_dynamics():
     def __init__(self, chi=None):
