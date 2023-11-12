@@ -1,5 +1,5 @@
 import numpy as np
-import signalGenerator as sig
+import lib.signalGenerator as sig
 
 class carrier_dynamics():
     def __init__(self, chi=None):
@@ -26,11 +26,12 @@ class carrier_dynamics():
         
     def update(self, t):
         delta_max = 0.5
-        phi=0
-        self.old_phi=phi
+        phi = self.state[5][0]
+        theta = self.state[6][0]
+        self.old_phi= phi
         self.old_theta = theta
-        phi = sig.signalGenerator(np.random.uniform(-10,10),1/300).sin(t) + sig.signalGenerator(np.random.uniform(-10,10),1/700).sin(t)
-        theta = sig.signalGenerator(np.random.uniform(-10,10),1/300).sin(t) + sig.signalGenerator(np.random.uniform(-10,10),1/700).sin(t)
+        phi = sig.signalGenerator(np.random.uniform(-2,2),1/300).sin(t) + sig.signalGenerator(np.random.uniform(-2,2),1/700).sin(t)
+        theta = sig.signalGenerator(np.random.uniform(-2,2),1/300).sin(t) + sig.signalGenerator(np.random.uniform(-2,2),1/700).sin(t)
         if np.abs(phi-self.old_phi)>delta_max:
             phi=self.old_phi
         if np.abs(theta-self.old_theta)>delta_max:
