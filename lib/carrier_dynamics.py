@@ -45,4 +45,4 @@ class carrier_dynamics():
             self.state[6][0]=phi
             self.state[7][0]=theta
         self.state[0][0]=self.u*t
-        self.state[1][0]=self.v*t
+        self.state[1][0]=self.v*t 
