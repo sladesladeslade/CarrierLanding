@@ -7,46 +7,46 @@ import keyboard
 import lib.ACanim as anim
 import lib.ACdynamics as acd
 import lib.ACaero as aca
-import lib.waves as wave
+import lib.carrier_dynamics as car
 from obj.hangar import *
 from lib.simparams import *
 
 ###### Initialize Misc Classes ######
-anim = anim.animation()
+anim = anim.animation(100, 0.4)
 ac_dyn = acd.ACdynamics()
 ac_aero = aca.Aero()
+car_dyn = car.carrier_dynamics(0)
 
 
 
 ## Initalize Sim Time ##
-Ts = start_time
-
-
-## Verts for AC and Carrier ##
-
+t = start_time
 
 
 
 ## Main Sim Loop ##
-while Ts < end_time:
-    ## Carrier stuff ##
+while t < end_time:
+    t_next_plot = t + ts_plotting
+    while t < t_next_plot:
+        # update carrier dynamics
+        car_dyn.update(t)
+        
+        # do wind
+        
+        # autopilot
+        
+        # aero
+        
+        # dynamics
+
+        # anim update
+        anim.update(f18_verts, carrier_verts, ac_dyn.state, car_dyn.state, ["b"], ["g"])
+        
+        # iterate time
+        t += ts_simulation
+        
+    # do plotting
     
-
-    ## Wind stuff to get alpha, beta, Va ##
-    
-
-    ## Autopilot to get deflection angles ##
-
-
-    ## Aero stuff to get forces/moments ##
-
-
-    ## Dynamics stuff to get state ##
-
-
-    ## Animate the state ##
-    anim.update()
-
+    # check for keybaord press
+    plt.pause(0.01)
     if keyboard.is_pressed('q'): break
-    plt.pause(0.1)
-    Ts += ts_simulation
