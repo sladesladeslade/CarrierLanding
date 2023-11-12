@@ -7,7 +7,6 @@ import time
 import scipy.linalg as linalg
 from lib.ACparams import *
 import matplotlib.pyplot as plt
-from lib.ACanim import ACanim
 from lib.ACdynamics import ACdynamics
 
 class Aero():
