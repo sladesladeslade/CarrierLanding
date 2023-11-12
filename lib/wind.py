@@ -4,11 +4,12 @@
 # sys.path.append(cwd)
 import numpy as np
 import lib.ACparams as P
-from lib.ACdynamics import UAVdynamics
+# from lib.ACdynamics import ACdynamics
 import control
 from lib.rotations import Rvb
 from control.matlab import *
 # Filter out the specific warning
+import warnings; warnings.filterwarnings("ignore", category=UserWarning, module="control")
 
 
 # create random gust noise

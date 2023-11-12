@@ -9,8 +9,8 @@ class carrier_dynamics():
         else:
             self.chi = chi
 
-        self.u=B*np.sin(self.chi)
-        self.v=B*np.cos(self.chi)
+        self.u=B*np.cos(self.chi)
+        self.v=B*np.sin(self.chi)
         self.state=np.array([[0.], #pn
                   [0.], #pe
                   [0.], # pd
@@ -19,7 +19,7 @@ class carrier_dynamics():
                   [0.], # w
                   [0.], # phi
                   [0.], # theta
-                  [0.], # psi
+                  [self.chi], # psi
                   [0.], # p
                   [0.], # q
                   [0.]]) # r    
