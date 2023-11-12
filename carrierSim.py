@@ -7,14 +7,15 @@ import keyboard
 import lib.ACanim as anim
 import lib.ACdynamics as acd
 import lib.ACaero as aca
-import lib.waves as wave
+import lib.carrier_dynamics as car
 from obj.hangar import *
 from lib.simparams import *
 
 ###### Initialize Misc Classes ######
-anim = anim.animation(10, 0.4)
+anim = anim.animation(100, 0.4)
 ac_dyn = acd.ACdynamics()
 ac_aero = aca.Aero()
+car_dyn = car.carrier_dynamics(0)
 
 
 
@@ -28,6 +29,7 @@ while t < end_time:
     t_next_plot = t + ts_plotting
     while t < t_next_plot:
         # update carrier dynamics
+        car_dyn.update(t)
         
         # do wind
         
@@ -36,9 +38,9 @@ while t < end_time:
         # aero
         
         # dynamics
-        
+
         # anim update
-        anim.update(f18_verts, carrier_verts, f18state, carrierstate, ["b"], ["g"])
+        anim.update(f18_verts, carrier_verts, ac_dyn.state, car_dyn.state, ["b"], ["g"])
         
         # iterate time
         t += ts_simulation
