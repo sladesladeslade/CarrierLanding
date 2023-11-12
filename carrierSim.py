@@ -12,21 +12,39 @@ from obj.hangar import *
 from lib.simparams import *
 
 ###### Initialize Misc Classes ######
-anim = anim.animation()
+anim = anim.animation(10, 0.4)
 ac_dyn = acd.ACdynamics()
 ac_aero = aca.Aero()
 
 
 
 ## Initalize Sim Time ##
-Ts = start_time
+t = start_time
 
 
 
 ## Main Sim Loop ##
-while Ts < end_time:
-    """"""
-
+while t < end_time:
+    t_next_plot = t + ts_plotting
+    while t < t_next_plot:
+        # update carrier dynamics
+        
+        # do wind
+        
+        # autopilot
+        
+        # aero
+        
+        # dynamics
+        
+        # anim update
+        anim.update(f18_verts, carrier_verts, f18state, carrierstate, ["b"], ["g"])
+        
+        # iterate time
+        t += ts_simulation
+        
+    # do plotting
+    
+    # check for keybaord press
+    plt.pause(0.01)
     if keyboard.is_pressed('q'): break
-plt.pause(0.1)
-Ts += ts_simulation
