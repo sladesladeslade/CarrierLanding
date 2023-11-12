@@ -8,7 +8,7 @@
 ######################################################################################
 ts_simulation = 0.02  # smallest time step for simulation
 start_time = 0.  # start time for simulation
-end_time = 10.  # end time for simulation
+end_time = 100.  # end time for simulation
 
 ts_plotting = 0.1  # refresh rate for plots
 
