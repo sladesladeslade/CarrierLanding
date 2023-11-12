@@ -61,11 +61,11 @@ class animation():
         Updates position and rotation of object and draws it.
         """
         # draw obj 1
-        n1, e1, d1, phi1, theta1, psi1, _, _, _, _, _, _ = state1.flatten()
+        n1, e1, d1, _, _, _, phi1, theta1, psi1, _, _, _ = state1.flatten()
         self.drawObj1(verts1, n1, e1, d1, phi1, theta1, psi1, facecolors=facecolors1)
         
         # draw obj 2
-        n2, e2, d2, phi2, theta2, psi2, _, _, _, _, _, _ = state2.flatten()
+        n2, e2, d2, _, _, _, phi2, theta2, psi2, _, _, _ = state2.flatten()
         self.drawObj2(verts2, n2, e2, d2, phi2, theta2, psi2, facecolors=facecolors2)
         
         # set init flag
