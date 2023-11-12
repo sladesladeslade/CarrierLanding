@@ -22,11 +22,31 @@ ac_aero = aca.Aero()
 Ts = start_time
 
 
+## Verts for AC and Carrier ##
+
+
+
 
 ## Main Sim Loop ##
 while Ts < end_time:
-    """"""
+    ## Carrier stuff ##
+    
+
+    ## Wind stuff to get alpha, beta, Va ##
+    
+
+    ## Autopilot to get deflection angles ##
+
+
+    ## Aero stuff to get forces/moments ##
+
+
+    ## Dynamics stuff to get state ##
+
+
+    ## Animate the state ##
+    anim.update()
 
     if keyboard.is_pressed('q'): break
-plt.pause(0.1)
-Ts += ts_simulation
+    plt.pause(0.1)
+    Ts += ts_simulation
