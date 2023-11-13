@@ -19,8 +19,8 @@ from obj.hangar import *
 from lib.simparams import *
 plt.ion()
 
-# fig2 = plt.figure("Plots")
-# ax2 = fig2.add_subplot(111)
+fig2 = plt.figure("Plots")
+ax2 = fig2.add_subplot(111)
 
 ###### Initialize Misc Classes ######
 anim = anim.animation(25, 0.4)
@@ -69,12 +69,13 @@ while t < end_time:
         
         # autopilot
         pn, pe, pd, u, v, w, phi, theta, psi, p, q, r = ac_dyn.state.flatten()
-        # w_c = calcWreq(car_dyn.state, ac_dyn.state)
-        w_c = 1.2
+        w_c = calcWreq(car_dyn.state, ac_dyn.state)
+        # w_c = 2.144
         u = np.array([t, w, phi, theta, psi, p, q, r, Va, -pd, Va_c, h_c, chi_c, theta_c, theta, w_c])
         delta_e, delta_a, delta_r, delta_t = autop.update(u, True)
-        # ws.append(w)
-        # ts.append(t)
+        ws.append(w)
+        ts.append(t)
+        
         # aero
         fx, fy, fz = ac_aero.forces(ac_dyn.state, delta_e, delta_a, delta_r, delta_t, alpha, beta, Va)
         l, m, n = ac_aero.moments(ac_dyn.state, delta_e, delta_a, delta_r, delta_t, alpha, beta, Va)
@@ -85,14 +86,21 @@ while t < end_time:
         # anim update
         anim.update(f18_verts, carrier_verts, ac_dyn.state, car_dyn.state, ["b"], ["g"])
         
+        if -ac_dyn.state[2][0] <= 0:
+            print(ac_dyn.state[0][0])
+            print(car_dyn.state[0][0])
+            t = end_time
+        
         # iterate time
         t += ts_simulation
         
     # do plotting
-    # ax2.clear()
-    # ax2.plot(ts, ws)
-    # ax2.hlines(w_c, 0, ts[-1], "r", linestyle="--")
+    ax2.clear()
+    ax2.plot(ts, ws)
+    ax2.hlines(w_c, 0, ts[-1], "r", linestyle="--")
     
     # check for keybaord press
     plt.pause(0.01)
     if keyboard.is_pressed('q'): break
+    
+plt.waitforbuttonpress()

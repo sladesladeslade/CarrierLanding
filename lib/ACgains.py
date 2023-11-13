@@ -38,7 +38,7 @@ kdphi = (2*zeta*wn_roll - a_phi1)/a_phi2
 kiphi = 0
 
 # course hold
-tr_course = 2.5
+tr_course = 10.
 wn_course = 2.2/tr_course
 kpchi = (2*zeta*wn_course*Va_trim)/P.gravity
 kdchi = 0
