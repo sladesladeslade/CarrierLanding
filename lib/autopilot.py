@@ -10,7 +10,7 @@ class autopilot():
     def __init__(self, dt, alt_hold_zone):
         self.dt = dt
         self.altitude_hold_zone = alt_hold_zone
-        self.initflag = 1.
+        self.initialize_integrator = 1.
         self.altitude_state = 0.
         
     
@@ -31,7 +31,7 @@ class autopilot():
         ### longitudinal autopilot ###
         if t == 0:
             # check height to see which altitude state in (@ start)
-            if approach == "True":
+            if approach == True:
                 self.altitude_state = "Approach"
             elif h <= h_c - self.altitude_hold_zone:
                 self.altitude_state = "Climb"
@@ -40,7 +40,7 @@ class autopilot():
             else:
                 self.altitude_state = "Hold"
             self.initialize_integrator = 1
-        
+
         # climb
         if self.altitude_state == "Climb":
             # max throttle and hold pitch angle
@@ -104,7 +104,7 @@ class autopilot():
         elif approach == False:
             delta_e = self.pitch_hold(theta_c, theta, q, 0, self.dt)
         
-        return (delta_e, delta_a, delta_r, delta_t)
+        return delta_e, delta_a, delta_r, delta_t
     
     
     def roll_hold(self, phi_c, phi, p, flag, dt):
@@ -270,6 +270,61 @@ class autopilot():
         u_sat = self.sat(u, limit1, limit2)
         if ki != 0:
             self.ah_integrator = self.ah_integrator + dt/ki*(u_sat - u)
+        
+        return u_sat
+    
+    
+    def alpha_hold(self, alpha_c, alpha, q, flag, dt):
+        limit1 = np.deg2rad(45)
+        limit2 = -np.deg2rad(45)
+        
+        kp = -4.
+        kd = 0.04
+        ki = 0.
+        
+        if flag == 1:
+            self.alphh_integrator = 0
+            self.alphh_differentiator = 0
+            self.alphh_error_d1 = 0
+            
+        error = alpha_c - alpha
+        self.alphh_integrator = self.alphh_integrator + (dt/2)*(error + self.alphh_error_d1)
+        self.alphh_differentiator = q
+        self.alphh_error_d1 = error
+        
+        u = kp*error + ki*self.alphh_integrator + kd*self.alphh_differentiator
+
+        u_sat = self.sat(u, limit1, limit2)
+        if ki != 0:
+            self.alphh_integrator = self.alphh_integrator + dt/ki*(u_sat - u)
+        
+        return u_sat
+    
+    
+    def w_hold(self, w_c, w, flag, dt):
+        limit1 = 1.
+        limit2 = 0.
+        
+        kp = -0.04
+        kd = 0.
+        ki = -0.14
+        
+        if flag == 1:
+            self.w_integrator = 0
+            self.w_differentiator = 0
+            self.w_error_d1 = 0
+            
+        tau = 5
+        error = w_c - w
+        self.w_integrator = self.w_integrator + (dt/2)*(error + self.w_error_d1)
+        self.w_differentiator = (2*tau - dt)/(2*tau + dt)*self.w_differentiator + 2/(2*tau + dt)*(error - self.w_error_d1)
+        self.w_error_d1 = error
+        
+        u = kp*error + ki*self.w_integrator + kd*self.w_differentiator
+
+        u_sat = self.sat(u, limit1, limit2)
+        if ki != 0:
+            self.w_integrator = self.w_integrator + dt/ki*(u_sat - u)
         
         return u_sat
 
