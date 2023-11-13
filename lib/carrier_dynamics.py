@@ -29,19 +29,12 @@ class carrier_dynamics():
             self.state[6][0]=0
             self.state[7][0]=0
         else:
-            delta_max = np.radians(0.1)
             phi = self.state[6][0]
             theta = self.state[7][0]
             self.old_phi= phi
             self.old_theta = theta   
-            phi = sig.signalGenerator(np.random.uniform(-np.radians(10),np.radians(10)),1/3).sin(t) + \
-                sig.signalGenerator(np.random.uniform(-np.radians(10),np.radians(10)),1/70).sin(t)
-            theta = sig.signalGenerator(np.random.uniform(-np.radians(2),np.radians(2)),1/3).sin(t) + \
-                sig.signalGenerator(np.random.uniform(-np.radians(2),np.radians(2)),1/70).sin(t)
-            if np.abs(phi-self.old_phi)>delta_max:
-                phi=self.old_phi
-            if np.abs(theta-self.old_theta)>delta_max:
-                theta=self.old_theta
+            phi = sig.signalGenerator(np.radians(5), 1/30).sin(t)
+            theta = sig.signalGenerator(np.radians(1), 1/30).sin(t + np.pi/3.5)
             self.state[6][0]=phi
             self.state[7][0]=theta
         self.state[0][0]=self.u*t
