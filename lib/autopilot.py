@@ -308,9 +308,9 @@ class autopilot():
         limit1 = 1.
         limit2 = 0.
         
-        kp = 1.
-        kd = -1.
-        ki = 2.
+        kp = -0.3
+        kd = -7.
+        ki = -1.
         
         if flag == 1:
             self.w_integrator = 0
@@ -319,9 +319,6 @@ class autopilot():
             
         tau = 5
         error = w_c - w
-        print(f"Wc: {w_c:.2f}")
-        print(f"w: {w:.2f}")
-        print(f"e: {error:.2f}")
         self.w_integrator = self.w_integrator + (dt/2)*(error + self.w_error_d1)
         self.w_differentiator = (2*tau - dt)/(2*tau + dt)*self.w_differentiator + 2/(2*tau + dt)*(error - self.w_error_d1)
         self.w_error_d1 = error

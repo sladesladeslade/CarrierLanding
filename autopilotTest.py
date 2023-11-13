@@ -19,6 +19,8 @@ from obj.hangar import *
 from lib.simparams import *
 plt.ion()
 
+# fig2 = plt.figure("Plots")
+# ax2 = fig2.add_subplot(111)
 
 ###### Initialize Misc Classes ######
 anim = anim.animation(25, 0.4)
@@ -50,10 +52,11 @@ ac_dyn.state = states0
 # commanded vals
 Va = 35.
 Va_c = 35.
-theta_c = np.deg2rad(2.)
+theta_c = np.deg2rad(3.)
 chi_c = 0.
 h_c = 0.
-
+ws = []
+ts = []
 ## Main Sim Loop ##
 while t < end_time:
     t_next_plot = t + ts_plotting
@@ -70,8 +73,8 @@ while t < end_time:
         w_c = 1.2
         u = np.array([t, w, phi, theta, psi, p, q, r, Va, -pd, Va_c, h_c, chi_c, theta_c, theta, w_c])
         delta_e, delta_a, delta_r, delta_t = autop.update(u, True)
-        print(f"t: {delta_t:.2f}")
-
+        # ws.append(w)
+        # ts.append(t)
         # aero
         fx, fy, fz = ac_aero.forces(ac_dyn.state, delta_e, delta_a, delta_r, delta_t, alpha, beta, Va)
         l, m, n = ac_aero.moments(ac_dyn.state, delta_e, delta_a, delta_r, delta_t, alpha, beta, Va)
@@ -86,6 +89,9 @@ while t < end_time:
         t += ts_simulation
         
     # do plotting
+    # ax2.clear()
+    # ax2.plot(ts, ws)
+    # ax2.hlines(w_c, 0, ts[-1], "r", linestyle="--")
     
     # check for keybaord press
     plt.pause(0.01)
