@@ -10,19 +10,25 @@ import lib.ACaero as aca
 import lib.carrier_dynamics as car
 from obj.hangar import *
 from lib.simparams import *
+import lib.ACtrim as trim
 
 ###### Initialize Misc Classes ######
 anim = anim.animation(100, 0.4)
 ac_dyn = acd.ACdynamics()
 ac_aero = aca.Aero()
 car_dyn = car.carrier_dynamics(0)
+# trim = trim.ComputeTrim()
 
 
 
 ## Initalize Sim Time ##
 t = start_time
 
-
+## Compute trim conditions ##
+# xtrim, utrim = trim.compute_trim(35, 0, np.inf)
+# print(xtrim)
+# print('~~~~~~~~~~~~~~~~')
+# print(utrim)
 
 ## Main Sim Loop ##
 while t < end_time:
