@@ -50,7 +50,7 @@ ac_dyn.state = states0
 # commanded vals
 Va = 35.
 Va_c = 35.
-alpha_c = np.deg2rad(8.)
+theta_c = np.deg2rad(2.)
 chi_c = 0.
 h_c = 0.
 
@@ -66,10 +66,12 @@ while t < end_time:
         
         # autopilot
         pn, pe, pd, u, v, w, phi, theta, psi, p, q, r = ac_dyn.state.flatten()
-        w_c = calcWreq(car_dyn.state, ac_dyn.state)
-        u = np.array([t, w, phi, theta, psi, p, q, r, Va, -pd, Va_c, h_c, chi_c, alpha_c, alpha, w_c])
+        # w_c = calcWreq(car_dyn.state, ac_dyn.state)
+        w_c = 1.2
+        u = np.array([t, w, phi, theta, psi, p, q, r, Va, -pd, Va_c, h_c, chi_c, theta_c, theta, w_c])
         delta_e, delta_a, delta_r, delta_t = autop.update(u, True)
-        
+        print(f"t: {delta_t:.2f}")
+
         # aero
         fx, fy, fz = ac_aero.forces(ac_dyn.state, delta_e, delta_a, delta_r, delta_t, alpha, beta, Va)
         l, m, n = ac_aero.moments(ac_dyn.state, delta_e, delta_a, delta_r, delta_t, alpha, beta, Va)

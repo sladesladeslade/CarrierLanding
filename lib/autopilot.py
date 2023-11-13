@@ -88,7 +88,7 @@ class autopilot():
         # approach
         elif self.altitude_state == "Approach":
             # hold alpha constant
-            delta_e = self.alpha_hold(alpha_c, alpha, q, self.initialize_integrator, self.dt)
+            delta_e = self.pitch_hold(alpha_c, alpha, q, self.initialize_integrator, self.dt)
             
             # then get w
             delta_t = self.w_hold(w_c, w, self.initialize_integrator, self.dt)
@@ -97,6 +97,9 @@ class autopilot():
             delta_r = 0
             phi_c = self.course_hold(chi_c, chi, r, self.initialize_integrator, self.dt)
             delta_a = self.roll_hold(phi_c, phi, p, self.initialize_integrator, self.dt)
+            
+            # reset flag
+            self.initialize_integrator = 0
         
         # set elevator to hold pitch
         if t == 0 and approach == False:
@@ -278,9 +281,9 @@ class autopilot():
         limit1 = np.deg2rad(45)
         limit2 = -np.deg2rad(45)
         
-        kp = -4.
-        kd = 0.04
-        ki = 0.
+        kp = 1.
+        kd = 5.
+        ki = 1.
         
         if flag == 1:
             self.alphh_integrator = 0
@@ -293,7 +296,7 @@ class autopilot():
         self.alphh_error_d1 = error
         
         u = kp*error + ki*self.alphh_integrator + kd*self.alphh_differentiator
-
+        print(u)
         u_sat = self.sat(u, limit1, limit2)
         if ki != 0:
             self.alphh_integrator = self.alphh_integrator + dt/ki*(u_sat - u)
@@ -305,9 +308,9 @@ class autopilot():
         limit1 = 1.
         limit2 = 0.
         
-        kp = -0.04
-        kd = 0.
-        ki = -0.14
+        kp = 1.
+        kd = -1.
+        ki = 2.
         
         if flag == 1:
             self.w_integrator = 0
@@ -316,6 +319,9 @@ class autopilot():
             
         tau = 5
         error = w_c - w
+        print(f"Wc: {w_c:.2f}")
+        print(f"w: {w:.2f}")
+        print(f"e: {error:.2f}")
         self.w_integrator = self.w_integrator + (dt/2)*(error + self.w_error_d1)
         self.w_differentiator = (2*tau - dt)/(2*tau + dt)*self.w_differentiator + 2/(2*tau + dt)*(error - self.w_error_d1)
         self.w_error_d1 = error

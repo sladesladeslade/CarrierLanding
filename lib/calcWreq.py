@@ -19,6 +19,6 @@ def calcWreq(carstate, acstate):
     vA = np.sqrt(acstate[3][0]**2 + acstate[4][0]**2)
     
     # calc required descent rate
-    wreq = -(vB - vA)/distA*(hdif)
+    wreq = (vB - vA)/distA*(hdif)
     
     return wreq
