@@ -38,7 +38,7 @@ kdphi = (2*zeta*wn_roll - a_phi1)/a_phi2
 kiphi = 0
 
 # course hold
-tr_course = 10
+tr_course = 2.5
 wn_course = 2.2/tr_course
 kpchi = (2*zeta*wn_course*Va_trim)/P.gravity
 kdchi = 0
@@ -54,7 +54,7 @@ kitheta = 0
 ktheta_DC = (kptheta*a_theta3)/(a_theta2 + kptheta*a_theta3)
 
 # altitude from pitch gain
-tr_altitude = 1
+tr_altitude = 1.
 wn_altitude = 2.2/tr_altitude
 kpa_h = (2*zeta*wn_altitude)/(ktheta_DC*Va_trim)
 kda_h = 0
@@ -68,12 +68,8 @@ kda_p = 0
 kia_p = (wn_airspeed**2)/(ktheta_DC*P.gravity)
 
 # airspeed from throttle
-tr_throttle = 10
+tr_throttle = 15.
 wn_throttle = 2.2/tr_throttle
 kpa_t = (2*zeta*wn_throttle - a_V1)/a_V2
 kda_t = 0
 kia_t = (wn_throttle**2)/a_V2
-
-kp = np.array([kpphi, kpchi, kptheta, kpa_h, kpa_p, kpa_t])
-kd = np.array([kdphi, kdchi, kdtheta, kda_h, kda_p, kda_t])
-ki = np.array([kiphi, kichi, kitheta, kia_h, kia_p, kia_t])

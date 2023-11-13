@@ -9,32 +9,40 @@ class carrier_dynamics():
         else:
             self.chi = chi
 
-        u=B*np.sin(self.chi)
-        v=B*np.cos(self.chi)
+        self.u=B*np.cos(self.chi)
+        self.v=B*np.sin(self.chi)
         self.state=np.array([[0.], #pn
                   [0.], #pe
                   [0.], # pd
-                  [u], # u
-                  [v], # v
+                  [self.u], # u
+                  [self.v], # v
                   [0.], # w
                   [0.], # phi
                   [0.], # theta
-                  [0.], # psi
+                  [self.chi], # psi
                   [0.], # p
                   [0.], # q
                   [0.]]) # r    
         
-    def update(self, t):
-        delta_max = 0.5
-        phi = self.state[5][0]
-        theta = self.state[6][0]
-        self.old_phi= phi
-        self.old_theta = theta
-        phi = sig.signalGenerator(np.random.uniform(-2,2),1/300).sin(t) + sig.signalGenerator(np.random.uniform(-2,2),1/700).sin(t)
-        theta = sig.signalGenerator(np.random.uniform(-2,2),1/300).sin(t) + sig.signalGenerator(np.random.uniform(-2,2),1/700).sin(t)
-        if np.abs(phi-self.old_phi)>delta_max:
-            phi=self.old_phi
-        if np.abs(theta-self.old_theta)>delta_max:
-            theta=self.old_theta
-        self.state[6][0]=phi
-        self.state[7][0]=theta
+    def update(self, t, flag=False):
+        if flag == True:
+            self.state[6][0]=0
+            self.state[7][0]=0
+        else:
+            delta_max = np.radians(0.1)
+            phi = self.state[6][0]
+            theta = self.state[7][0]
+            self.old_phi= phi
+            self.old_theta = theta   
+            phi = sig.signalGenerator(np.random.uniform(-np.radians(10),np.radians(10)),1/3).sin(t) + \
+                sig.signalGenerator(np.random.uniform(-np.radians(10),np.radians(10)),1/70).sin(t)
+            theta = sig.signalGenerator(np.random.uniform(-np.radians(2),np.radians(2)),1/3).sin(t) + \
+                sig.signalGenerator(np.random.uniform(-np.radians(2),np.radians(2)),1/70).sin(t)
+            if np.abs(phi-self.old_phi)>delta_max:
+                phi=self.old_phi
+            if np.abs(theta-self.old_theta)>delta_max:
+                theta=self.old_theta
+            self.state[6][0]=phi
+            self.state[7][0]=theta
+        self.state[0][0]=self.u*t
+        self.state[1][0]=self.v*t 

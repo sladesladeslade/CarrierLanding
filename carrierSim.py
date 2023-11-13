@@ -13,7 +13,7 @@ from lib.simparams import *
 import lib.ACtrim as trim
 
 ###### Initialize Misc Classes ######
-anim = anim.animation(100, 0.4)
+anim = anim.animation(25, 0.4)
 ac_dyn = acd.ACdynamics()
 ac_aero = aca.Aero()
 car_dyn = car.carrier_dynamics(0)
