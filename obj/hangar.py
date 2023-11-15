@@ -17,3 +17,7 @@ f18_verts = f18_mesh.vectors*np.array([-1, 1, -1])
 # Aircraft Carrier
 carrier_mesh = mesh.Mesh.from_file(cwd + "\\obj\\carrier.stl")
 carrier_verts = carrier_mesh.vectors*np.array([-1, 1, -1])
+
+# F-4
+f4_mesh = mesh.Mesh.from_file(cwd + "\\obj\\f4.stl")
+f4_verts = f4_mesh.vectors*np.array([-1, 1, -1])
