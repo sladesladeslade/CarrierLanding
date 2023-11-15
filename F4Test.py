@@ -9,7 +9,7 @@ sys.path.append(cwd)
 import numpy as np
 import keyboard
 import lib.ACanim as anim
-import lib.ACdynamics as acd
+import lib.F4dynamics as acd
 import lib.F4aero as aca
 import lib.carrier_dynamics as car
 import lib.wind as wind
@@ -50,11 +50,10 @@ ac_dyn.state = states0
 # commanded vals
 Va = 250.
 Va_c = 250.
-theta_c = np.deg2rad(3.)
+theta_c = np.deg2rad(0.)
 chi_c = 0.
 h_c = 0.
-ws = []
-ts = []
+
 ## Main Sim Loop ##
 while t < end_time:
     t_next_plot = t + ts_plotting
@@ -63,18 +62,22 @@ while t < end_time:
         car_dyn.update(t, False)
         
         # do wind
-        Va, alpha, beta = wind.wind_char(ac_dyn.state, Va, ts_simulation)
-        
+        # Va, alpha, beta = wind.wind_char(ac_dyn.state, Va, ts_simulation)
+        Va = 250.
+        alpha = 0.
+        beta = 0.
+
         # autopilot
         pn, pe, pd, u, v, w, phi, theta, psi, p, q, r = ac_dyn.state.flatten()
         w_c = calcWreq(car_dyn.state, ac_dyn.state)
         u = np.array([t, w, phi, theta, psi, p, q, r, Va, -pd, Va_c, h_c, chi_c, theta_c, theta, w_c])
-        delta_e, delta_a, delta_r, delta_t = autop.update(u, False)
-        delta_t = 1.
+        # delta_e, delta_a, delta_r, delta_t = autop.update(u, False)
+        delta_e = np.radians(1.5); delta_a = 0.; delta_r = 0.; delta_t = 0.5
+
         # aero
         fx, fy, fz = ac_aero.forces(ac_dyn.state, delta_e, delta_a, delta_r, delta_t, alpha, beta, Va)
         l, m, n = ac_aero.moments(ac_dyn.state, delta_e, delta_a, delta_r, delta_t, alpha, beta, Va)
-        
+
         # dynamics
         ac_dyn.update(fx, fy, fz, l, m, n)
 
