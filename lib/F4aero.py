@@ -19,7 +19,7 @@ class Aero():
                         [C_Y_0 + C_Y_beta*beta + C_Y_p*(b/(2*Va))*p + C_Y_r*(b/(2*Va))*r + C_Y_delta_a*d_a + C_Y_delta_r*d_r],
                         [self.C_z(alpha) + self.C_zq(alpha)*(c/(2*Va))*q + self.C_zde(alpha)*d_e]])
 
-        propulsion = np.array([[d_t*36000*4.44822],
+        propulsion = np.array([[d_t*Fmax],
                                 [0],
                                 [0]])
 
