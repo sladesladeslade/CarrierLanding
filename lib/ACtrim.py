@@ -2,11 +2,7 @@ import numpy as np
 import sys
 import os
 sys.path.append(os.getcwd())
-# load message types
-#from message_types.msg_state import MsgState
 import lib.F4params as P
-from lib.rotations import Euler2Rotation
-import control
 from control.matlab import *
 import lib.simparams as SIM
 from lib.F4dynamics import ACdynamics

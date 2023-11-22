@@ -38,13 +38,8 @@ class Aero():
                                                        [b*(C_n_0 + C_n_beta*beta + C_n_p*(b/(2*Va))*p + C_n_r*(b/(2*Va))*r +\
                                                             C_n_delta_a*d_a + C_n_delta_r*d_r)]])
         
-        propeller = np.array([[0],
-                              [0],
-                              [0]])
+        l, m, n = aerodynamic.flatten()
         
-        moment = aerodynamic + propeller
-        l, m, n = moment.flatten()
-
         return l, m, n
     
     # Coefficient fucntions #
