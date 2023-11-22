@@ -1,11 +1,15 @@
 
 import numpy as np
 import lib.ACparams as P
+from lib.ACtrim import ComputeTrim
 
 
 # set xtrim and utrim
-x_trim = [0., 0., 0., 34.9957342, -0.178955870,  0.516297644, -0.0123005172, 0.0147520892, 0., 0., 0., 0.]
-u_trim = np.array([-0.02719265, 0.46236388, -0.00384226, -0.00479692])
+Va = 250.
+R = np.inf
+Y = np.deg2rad(0.)
+trim = ComputeTrim()
+x_trim, u_trim = trim.compute_trim(Va, Y, R)
 
 # do the tf stuff to get the answers and woo
 Va_trim = np.sqrt(x_trim[3]**2 + x_trim[4]**2 + x_trim[5]**2)
