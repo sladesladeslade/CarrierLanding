@@ -27,7 +27,7 @@ anim = anim.animation(15, 0.4)
 ac_dyn = acd.ACdynamics()
 ac_aero = aca.Aero()
 car_dyn = car.carrier_dynamics(0.)
-Vsteady = np.array([[0.], [0.], [0.]])
+Vsteady = np.array([[-15.], [3.], [2.]])
 wind = wind.wind(Vsteady)
 autop = autopilot(ts_simulation, 2.)
 
@@ -70,7 +70,6 @@ while t < end_time:
         # autopilot
         pn, pe, pd, u, v, w, phi, theta, psi, p, q, r = ac_dyn.state.flatten()
         w_c = calcWreq(car_dyn.state, ac_dyn.state)
-        # w_c = 2.144
         u = np.array([t, w, phi, theta, psi, p, q, r, Va, -pd, Va_c, h_c, chi_c, theta_c, theta, w_c])
         delta_e, delta_a, delta_r, delta_t = autop.update(u, True)
         # ws.append(w)
