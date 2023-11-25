@@ -48,7 +48,7 @@ class autopilot():
             theta_c = self.airspeed_hold_pitch(Va_c, Va, self.initialize_integrator, self.dt)
             
             # if above height than set to hold
-            if h >= h_c - self.altitude_take_off_zone:
+            if h >= h_c - self.altitude_hold_zone:
                 self.altitude_state = "Hold"
                 self.initialize_integrator = 1
             else:
@@ -59,7 +59,7 @@ class autopilot():
             # 0 throttle and hold pitch angle
             delta_t = 0
             theta_c = self.airspeed_hold_pitch(Va_c, Va, self.initialize_integrator, self.dt)
-            
+
             # if below height than set to hold
             if h <= h_c + self.altitude_hold_zone:
                 self.altitude_state = "Hold"
@@ -75,12 +75,12 @@ class autopilot():
             
             # if too low climb
             if h <= h_c - self.altitude_hold_zone:
-                self.altitude_state = 1
+                self.altitude_state = "Climb"
                 self.initialize_integrator = 1
                 
             # if too high descend
             elif h >= h_c + self.altitude_hold_zone:
-                self.altitude_state = 2
+                self.altitude_state = "Descend"
                 self.initialize_integrator = 1
             else:
                 self.initialize_integrator = 0
@@ -192,8 +192,8 @@ class autopilot():
 
         
     def airspeed_hold_pitch(self, Va_c, Va, flag, dt):
-        limit1 = np.deg2rad(45)
-        limit2 = -np.deg2rad(45)
+        limit1 = np.deg2rad(20)
+        limit2 = -np.deg2rad(20)
         
         kp = G.kpa_p
         kd = G.kda_p
