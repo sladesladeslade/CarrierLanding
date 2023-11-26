@@ -7,11 +7,12 @@ import lib.ACgains as G
 
 
 class autopilot():
-    def __init__(self, dt, alt_hold_zone):
+    def __init__(self, dt, alt_hold_zone, h_land):
         self.dt = dt
         self.altitude_hold_zone = alt_hold_zone
         self.initialize_integrator = 1.
         self.altitude_state = 0.
+        self.h_land = h_land
         
     
     def update(self, u, approach=False):
@@ -41,6 +42,14 @@ class autopilot():
                 self.altitude_state = "Hold"
             self.initialize_integrator = 1
 
+        # check for approach or landing
+        if approach == True:
+            self.altitude_state = "Approach"
+            self.initialize_integrator = 1
+        elif h <= self.h_land:
+            self.altitude_state = "Land"
+            self.initialize_integrator = 1
+            
         # climb
         if self.altitude_state == "Climb":
             # max throttle and hold pitch angle
@@ -97,6 +106,17 @@ class autopilot():
             delta_r = 0
             phi_c = self.course_hold(chi_c, chi, r, self.initialize_integrator, self.dt)
             delta_a = self.roll_hold(phi_c, phi, p, self.initialize_integrator, self.dt)
+            
+            # reset flag
+            self.initialize_integrator = 0
+            
+        # landing
+        elif self.altitude_state == "Land":
+            # keep holding alpha
+            delta_e = self.pitch_hold(alpha_c, alpha, q, self.initialize_integrator, self.dt)
+            
+            # cut throttle
+            delta_t = 0.
             
             # reset flag
             self.initialize_integrator = 0

@@ -1,0 +1,117 @@
+# Navigation Class
+# Slade Brooks
+# brooksl@mail.uc.edu
+# this boy gonna navimagate
+
+import numpy as np
+from numpy import sin, cos, arctan2, arctan
+import matplotlib.pyplot as plt
+
+
+class nav():
+    def __init__(self, car_chi, app_dist):
+        self.car_chi = car_chi
+        self.app_dist = app_dist
+        
+    
+    def courseToApproach(self, state, car_state):
+        """
+        Determine course command to approach point.
+        """
+        # get aircraft position
+        pn = state[0][0]
+        pe = state[1][0]
+        
+        # get approach position
+        an, ae = self.approachLoc(car_state)
+        
+        # get dists
+        dn = an - pn
+        de = ae - pe
+        
+        # do atan to get angle between points
+        theta = arctan2(de, dn)
+        chi_c = (theta + np.pi) % (2*np.pi) - np.pi
+
+        return chi_c
+    
+    
+    def courseToCar(self, state, car_state):
+        """
+        Determine course command to carrier landing point.
+        """
+        # get aircraft position
+        pn = state[0][0]
+        pe = state[1][0]
+        
+        # get carrier position
+        cn = car_state[0][0]
+        ce = car_state[1][0]
+        
+        # get ave position
+        mn = (pn + cn)/2
+        me = (pe + ce)/2
+        
+        # get dists
+        dn = mn - pn
+        de = me - pe
+        
+        # do atan to get angle between points
+        theta = arctan2(de, dn)
+        chi_c = (theta + np.pi)%(2*np.pi) - np.pi
+
+        return chi_c
+        
+    
+    def approachLoc(self, car_state):
+        """
+        Determine approach point position.
+        """
+        # get carrier position
+        cn = car_state[0][0]
+        ce = car_state[1][0]
+        
+        # calculate location behind carrier to start approach
+        ae = ce - self.app_dist*sin(self.car_chi)
+        an = cn - self.app_dist*cos(self.car_chi)
+        
+        return an, ae
+        
+
+# testing
+if __name__ == "__main__":
+    plt.figure()
+    
+    # init nav class
+    nav = nav(np.deg2rad(10), 100.)
+    
+    # carrier position
+    cn = 100.
+    ce = 100.
+    car_state = np.array([[cn], [ce]])
+    
+    # determine approach location
+    an, ae = nav.approachLoc(car_state)
+    print(an, ae)
+    print(np.sqrt((cn - an)**2 + (ce - ae)**2))
+    
+    # aircraft position
+    pn = 250.
+    pe = 605.
+    state = np.array([[pn], [pe]])
+    
+    # plotting
+    plt.scatter(ce, cn, color = "g")
+    plt.scatter(ae, an, color = "r")
+    plt.scatter(pe, pn, color = "k")
+    
+    # calc commanded angle
+    chi_c = nav.courseToApproach(state, car_state)
+    print(np.rad2deg(chi_c))
+    
+    # show plot
+    plt.gca().set_aspect("equal")
+    plt.grid()
+    plt.xlim(-250, 250)
+    plt.ylim(-250, 250)
+    plt.show()
