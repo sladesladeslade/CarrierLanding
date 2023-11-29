@@ -48,13 +48,25 @@ class nav():
         cn = car_state[0][0]
         ce = car_state[1][0]
         
-        # get ave position
-        mn = (pn + cn)/2
-        me = (pe + ce)/2
+        # get Q intermediate guy
+        Q = ((cos(self.car_chi)*(cn - pn) + sin(self.car_chi)*(ce - pe))/((cn - pn)**2 + (ce - pe)**2))
         
-        # get dists
-        dn = mn - pn
-        de = me - pe
+        # magnitude of d
+        if (cn - pn) > 0 and (ce - pe) > 0:
+            dmag = np.sqrt((Q*(cn - pn)**2) + (Q*(ce - pe)**2))
+        else:
+            dmag = 0.
+        
+        # delta d
+        deltad = 0.5*dmag
+        
+        # actual point to target
+        deln = cn - deltad*cos(self.car_chi)
+        dele = ce - deltad*sin(self.car_chi)
+        
+        # distance btn plane and target
+        dn = deln - pn
+        de = dele - pe
         
         # do atan to get angle between points
         theta = arctan2(de, dn)

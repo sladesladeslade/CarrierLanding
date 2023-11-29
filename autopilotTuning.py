@@ -26,19 +26,19 @@ anim = anim.animation(10, 0.5)
 ac_dyn = acd.ACdynamics()
 ac_aero = aca.Aero()
 car_dyn = car.carrier_dynamics(0.)
-Vsteady = np.array([[5.], [10.], [0.]])
+Vsteady = np.array([[0.], [0.], [0.]])
 wind = wind.wind(Vsteady)
 autop = autopilot(ts_simulation, 2., 5.)
-nav = nav.nav(car_dyn.chi, 5500.)
+nav = nav.nav(car_dyn.chi, 1500.)
 
 ## Initalize Sim Time ##
 t = start_time
 
 # init state
-states0 = np.array([[-7500.], #pn
-                  [5000.], #pe
-                  [-336.4], # pd
-                  [35.], # u
+states0 = np.array([[-2000.], #pn
+                  [2000.], #pe
+                  [-100.], # pd
+                  [50.], # u
                   [0.], # v
                   [0.], # w
                   [0.], # phi
@@ -51,15 +51,15 @@ ac_dyn.state = states0
 pn, pe, pd, u, v, w, phi, theta, psi, p, q, r = ac_dyn.state.flatten()
 
 # commanded vals
-Va = 35.
-Va_c = 35.
+Va = 50.
+Va_c = 50.
 theta_c = np.deg2rad(3.)
 chi_c = np.deg2rad(0.)
-h_c = 336.4
+h_c = 100.
 ws = []
 ts = []
 appFlag = False
-appTol = 325.
+appTol = 350.
 
 ## Main Sim Loop ##
 while t < end_time:
