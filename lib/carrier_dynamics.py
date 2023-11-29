@@ -37,7 +37,6 @@ class carrier_dynamics():
             self.state[6][0]=phi
             self.state[7][0]=theta
             self.state[8][0]=self.chi
-            print(np.degrees(self.chi))
             self.state[2][0]=pd
             # might need to move before
             self.u=self.B*np.cos(self.chi)

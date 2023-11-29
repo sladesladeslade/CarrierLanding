@@ -46,9 +46,9 @@ class autopilot():
         if approach == True:
             self.altitude_state = "Approach"
             self.initialize_integrator = 1
-        elif h <= h_land:
-            self.altitude_state = "Land"
-            self.initialize_integrator = 1
+            if h <= h_land:
+                self.altitude_state = "Land"
+                self.initialize_integrator = 1
             
         # climb
         if self.altitude_state == "Climb":
@@ -113,12 +113,16 @@ class autopilot():
         # landing
         elif self.altitude_state == "Land":
             if fail == False:
-                print("Landing...")
                 # keep holding alpha
                 delta_e = self.pitch_hold(alpha_c, alpha, q, self.initialize_integrator, self.dt)
                 
                 # cut throttle
                 delta_t = 0.
+                
+                # also get course
+                delta_r = 0
+                phi_c = self.course_hold(chi_c, chi, r, self.initialize_integrator, self.dt)
+                delta_a = self.roll_hold(phi_c, phi, p, self.initialize_integrator, self.dt)
                 
                 # reset flag
                 self.initialize_integrator = 0
@@ -126,12 +130,18 @@ class autopilot():
                 # takeoff
                 self.altitude_state = "Takeoff"
                 self.initialize_integrator = 1
+                approach = False
         
         # takeoff
         elif self.altitude_state == "Takeoff":
             # hold alpha constant
             delta_t = 1.
             theta_c = np.deg2rad(20.)
+            
+            # also get course
+            delta_r = 0
+            phi_c = self.course_hold(chi_c, chi, r, self.initialize_integrator, self.dt)
+            delta_a = self.roll_hold(phi_c, phi, p, self.initialize_integrator, self.dt)
             
             if h >= self.TOalt:
                 self.altitude_state = "Climb"
@@ -144,7 +154,7 @@ class autopilot():
         elif approach == False:
             delta_e = self.pitch_hold(theta_c, theta, q, 0, self.dt)
         
-        return delta_e, delta_a, delta_r, delta_t
+        return delta_e, delta_a, delta_r, delta_t, approach
     
     
     def roll_hold(self, phi_c, phi, p, flag, dt):

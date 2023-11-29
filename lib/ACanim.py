@@ -90,6 +90,7 @@ class animation():
         if self.flag_init is True:
             poly = Poly3DCollection(faces, facecolors=facecolors, alpha=self.alpha)
             self.obj1 = self.ax1.add_collection3d(poly)
+            self.obj1.set_sort_zpos(10)
             self.ax1.set_xlim([e-self.lim1, e+self.lim1])
             self.ax1.set_ylim([n-self.lim1, n+self.lim1])
             self.ax1.set_zlim([-d-self.lim1, -d+self.lim1])
@@ -116,8 +117,9 @@ class animation():
         
         # collect polys if first time
         if self.flag_init is True:
-            poly = Poly3DCollection(faces, facecolors=facecolors, alpha=self.alpha)
+            poly = Poly3DCollection(faces, facecolors=facecolors, alpha=0.5)
             self.obj2 = self.ax1.add_collection3d(poly)
+            self.obj2.set_sort_zpos(0)
         # otherwise update vert location
         else:
             self.obj2.set_verts(faces)

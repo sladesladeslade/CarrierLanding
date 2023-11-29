@@ -103,7 +103,7 @@ class nav():
         mnn = ln - 35*np.cos(chi)
         
         # check within max
-        if pn > mnp or pn < mnn or pe > mep or pe < mep:
+        if pn > mnp or pn < mnn or pe > mep or pe < men:
             return False
         else:
             return True
@@ -125,7 +125,7 @@ class nav():
         d = 75./2.
         ln = cn - d*np.cos(psi)
         le = ce - d*np.sin(psi)
-        lh = -(17 + ch - d*np.sin(theta))
+        lh = -(14.5 + ch - d*np.sin(theta))
         
         return ln, le, lh
         
