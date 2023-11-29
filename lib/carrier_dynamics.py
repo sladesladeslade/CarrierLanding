@@ -3,14 +3,13 @@ import lib.signalGenerator as sig
 
 class carrier_dynamics():
     def __init__(self, chi=None):
-        B=15.5
+        self.B=5
         if chi == None:
             self.chi = np.random.uniform(0,2*np.pi)
         else:
             self.chi = chi
-
-        self.u=B*np.cos(self.chi)
-        self.v=B*np.sin(self.chi)
+        self.u=self.B*np.cos(self.chi)
+        self.v=self.B*np.sin(self.chi)
         self.state=np.array([[0.], #pn
                   [0.], #pe
                   [0.], # pd
@@ -31,11 +30,17 @@ class carrier_dynamics():
         else:
             phi = self.state[6][0]
             theta = self.state[7][0]
-            self.old_phi= phi
-            self.old_theta = theta   
-            phi = sig.signalGenerator(np.radians(5), 1/30).sin(t)
+            # self.old_phi= phi
+            # self.old_theta = theta
+            phi = sig.signalGenerator(np.radians(5), 1/30).sin(t+np.pi/4.3)
             theta = sig.signalGenerator(np.radians(1), 1/30).sin(t + np.pi/3.5)
+            self.chi=self.chi + sig.signalGenerator(np.radians(1), 1/30).sin(t)
+            pd = sig.signalGenerator(2, 1/30).sin(t + np.pi/3.5)
             self.state[6][0]=phi
             self.state[7][0]=theta
+            self.state[2][0]=pd
+            # might need to move before
+            self.u=self.B*np.cos(self.chi)
+            self.v=self.B*np.sin(self.chi)
         self.state[0][0]=self.u*t
         self.state[1][0]=self.v*t 
