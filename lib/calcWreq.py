@@ -5,12 +5,12 @@
 import numpy as np
 
 
-def calcWreq(carstate, acstate):
+def calcWreq(carstate, acstate, cn, ce, ch):
     # find distance to boat
-    distA = np.sqrt((acstate[0][0] - carstate[0][0])**2 + (acstate[1][0] - carstate[1][0])**2)
+    distA = np.sqrt((acstate[0][0] - cn)**2 + (acstate[1][0] - ce)**2)
     
     # get height dif
-    hdif = -carstate[2][0] - (-acstate[2][0])
+    hdif = -ch - (-acstate[2][0])
     
     # find boat speed
     vB = np.sqrt(carstate[3][0]**2 + carstate[4][0]**2)

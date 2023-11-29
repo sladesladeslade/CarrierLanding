@@ -45,8 +45,7 @@ class nav():
         pe = state[1][0]
         
         # get carrier position
-        cn = car_state[0][0]
-        ce = car_state[1][0]
+        cn, ce, _ = self.landLoc(car_state)
         
         # get Q intermediate guy
         Q = ((cos(self.car_chi)*(cn - pn) + sin(self.car_chi)*(ce - pe))/((cn - pn)**2 + (ce - pe)**2))
@@ -88,6 +87,47 @@ class nav():
         an = cn - self.app_dist*cos(self.car_chi)
         
         return an, ae
+    
+    
+    def checkSuccess(self, car_state, pn, pe):
+        """
+        Determine if we gone die or nah.
+        """
+        ln, le, _ = self.landLoc(car_state)
+        chi = car_state[8][0]
+        
+        # get max dists
+        mep = le + 5*np.cos(chi)
+        men = le - 5*np.cos(chi)
+        mnp = ln + 10*np.cos(chi)
+        mnn = ln - 35*np.cos(chi)
+        
+        # check within max
+        if pn > mnp or pn < mnn or pe > mep or pe < mep:
+            return False
+        else:
+            return True
+        
+        
+    @staticmethod
+    def landLoc(car_state):
+        """
+        Determine landing location.
+        """
+        # get carrier position
+        cn = car_state[0][0]
+        ce = car_state[1][0]
+        ch = -car_state[2][0]
+        theta = car_state[7][0]
+        psi = car_state[8][0]
+        
+        # determine location
+        d = 75./2.
+        ln = cn - d*np.cos(psi)
+        le = ce - d*np.sin(psi)
+        lh = -(17 + ch - d*np.sin(theta))
+        
+        return ln, le, lh
         
 
 # testing

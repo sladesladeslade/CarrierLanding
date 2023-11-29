@@ -7,15 +7,15 @@ import lib.ACgains as G
 
 
 class autopilot():
-    def __init__(self, dt, alt_hold_zone, h_land):
+    def __init__(self, dt, alt_hold_zone, TOalt):
         self.dt = dt
         self.altitude_hold_zone = alt_hold_zone
         self.initialize_integrator = 1.
         self.altitude_state = 0.
-        self.h_land = h_land
+        self.TOalt = TOalt
         
     
-    def update(self, u, approach=False):
+    def update(self, u, h_land, approach=False, fail=True):
         # get info from the "state" thing
         t, w, phi, theta, chi, p, q, r, Va, h, Va_c, h_c, chi_c, alpha_c, alpha, w_c = u
         
@@ -46,7 +46,7 @@ class autopilot():
         if approach == True:
             self.altitude_state = "Approach"
             self.initialize_integrator = 1
-        elif h <= self.h_land:
+        elif h <= h_land:
             self.altitude_state = "Land"
             self.initialize_integrator = 1
             
@@ -112,14 +112,31 @@ class autopilot():
             
         # landing
         elif self.altitude_state == "Land":
-            # keep holding alpha
-            delta_e = self.pitch_hold(alpha_c, alpha, q, self.initialize_integrator, self.dt)
+            if fail == False:
+                print("Landing...")
+                # keep holding alpha
+                delta_e = self.pitch_hold(alpha_c, alpha, q, self.initialize_integrator, self.dt)
+                
+                # cut throttle
+                delta_t = 0.
+                
+                # reset flag
+                self.initialize_integrator = 0
+            elif fail == True:
+                # takeoff
+                self.altitude_state = "Takeoff"
+                self.initialize_integrator = 1
+        
+        # takeoff
+        elif self.altitude_state == "Takeoff":
+            # hold alpha constant
+            delta_t = 1.
+            theta_c = np.deg2rad(20.)
             
-            # cut throttle
-            delta_t = 0.
+            if h >= self.TOalt:
+                self.altitude_state = "Climb"
+                self.initialize_integrator = 1
             
-            # reset flag
-            self.initialize_integrator = 0
         
         # set elevator to hold pitch
         if t == 0 and approach == False:
