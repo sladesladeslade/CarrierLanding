@@ -100,7 +100,7 @@ class nav():
         mep = le + 5*np.cos(chi)
         men = le - 5*np.cos(chi)
         mnp = ln + 10*np.cos(chi)
-        mnn = ln - 35*np.cos(chi)
+        mnn = ln - 25*np.cos(chi)
         
         # check within max
         if pn > mnp or pn < mnn or pe > mep or pe < men:

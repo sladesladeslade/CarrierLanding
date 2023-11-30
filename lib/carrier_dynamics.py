@@ -32,7 +32,7 @@ class carrier_dynamics():
             theta = self.state[7][0]
             phi = sig.signalGenerator(np.radians(5), 1/30).sin(t+np.pi/4.3)
             theta = sig.signalGenerator(np.radians(1), 1/30).sin(t + np.pi/3.5)
-            self.chi+=sig.signalGenerator(np.radians(.001), 1/30).sin(t)
+            # self.chi+=sig.signalGenerator(np.radians(.001), 1/30).sin(t)
             pd = sig.signalGenerator(2, 1/30).sin(t + np.pi/3.5)
             self.state[6][0]=phi
             self.state[7][0]=theta
