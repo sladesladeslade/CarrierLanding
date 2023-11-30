@@ -83,6 +83,7 @@ carpns = []
 carpes = []
 carpds = []
 carphis = []
+carthetas = []
 carpsis = []
 carus = []
 carvs = []
@@ -130,6 +131,7 @@ while t < end_time:
         carpe = 0.
         carpd = 0.
         carphi = np.sin(10)
+        cartheta = np.sin(50)
         carpsi = np.cos(10)
         caru = 1.
         carv = 2.
@@ -174,6 +176,7 @@ while t < end_time:
     carpes.append(carpe)
     carpds.append(carpd)
     carphis.append(carphi)
+    carthetas.append(cartheta)
     carpsis.append(carpsi)
     carus.append(caru)
     carvs.append(carv)
@@ -196,6 +199,7 @@ while t < end_time:
     ACangles.plot(simtime, np.rad2deg(ACthetas), "r-", label="$\ttheta$")
     ACangles.plot(simtime, np.rad2deg(ACpsis), "b-", label="$\psi$")
     carangles.plot(simtime, np.rad2deg(carphis), "g-", label="$\phi$")
+    carangles.plot(simtime, np.rad2deg(carthetas), "r-", label="$\psi$")
     carangles.plot(simtime, np.rad2deg(carpsis), "b-", label="$\psi$")
     ACforces.plot(simtime, ACfxs, "g-", label="Fx")
     ACforces.plot(simtime, ACfys, "r-", label="Fy")
