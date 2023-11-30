@@ -22,11 +22,11 @@ plt.ion()
 
 
 ###### Initialize Misc Classes ######
-anim = anim.animation(10, 0.6)
+anim = anim.animation(100, 0.6)
 ac_dyn = acd.ACdynamics()
 ac_aero = aca.Aero()
 car_dyn = car.carrier_dynamics(0.)
-Vsteady = np.array([[-10.], [0.], [0.]])
+Vsteady = np.array([[0.], [0.], [0.]])
 wind = wind.wind(Vsteady)
 autop = autopilot(ts_simulation, 2.)
 nav = nav.nav(car_dyn.chi, 1500.)
@@ -66,6 +66,8 @@ goround = False
 appTol = 200.
 point = 0
 hland = 0.
+apoint = anim.ax1.scatter(0, 0, 0, marker=".", color="white")
+chi_a = 0.
 
 ## Main Sim Loop ##
 while t < end_time:
@@ -89,11 +91,12 @@ while t < end_time:
                     hland = -ch + 0.75
                     w_c = calcWreq(car_dyn.state, ac_dyn.state, cn, ce, ch)
             elif doApp == False:
-                # appFlag = False
-                chi_c, h_c, nan, nae = nav.courseToPattern(ac_dyn.state, car_dyn.state, point)
-                tol = 150.
+                chi_c, h_c, nan, nae = nav.courseToPattern(ac_dyn.state, car_dyn.state, point, chi_a)
+                tol = 50.
+                apoint.remove()
+                apoint = anim.ax1.scatter(nae, nan, h_c, marker="o", color="red")
                 if np.abs(pn) <= np.abs(nan) + tol and np.abs(pe) <= np.abs(nae) + tol and \
-                    np.abs(pn) >= np.abs(nan) - tol and np.abs(pe) >= np.abs(nae) - tol: point +=1
+                    np.abs(pn) >= np.abs(nan) - tol and np.abs(pe) >= np.abs(nae) - tol: point +=1; print(point)
                 if point >= 4: doApp = True
         
         # do wind
@@ -106,10 +109,11 @@ while t < end_time:
         
         # do goround if necessary
         if goround == True:
-            h_c = 100.
+            h_c = 250.
             chi_c = car_dyn.chi - np.deg2rad(30.)
             landFlag = False
             appFlag = False
+            point = 0
         
         # aero
         fx, fy, fz = ac_aero.forces(ac_dyn.state, delta_e, delta_a, delta_r, delta_t, alpha, beta, Va)
@@ -118,6 +122,7 @@ while t < end_time:
         # dynamics
         ac_dyn.update(fx, fy, fz, l, m, n)
         pn, pe, pd, u, v, w, phi, theta, psi, p, q, r = ac_dyn.state.flatten()
+        chi_a = np.arctan2(v, u)
 
         # anim update
         anim.update(f4_verts, carrier_verts, ac_dyn.state, car_dyn.state, ["b"], ["g"])

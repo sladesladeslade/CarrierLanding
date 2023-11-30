@@ -36,7 +36,7 @@ class nav():
         return chi_c
     
     
-    def courseToPattern(self, state, car_state, point):
+    def courseToPattern(self, state, car_state, point, lchi):
         """
         Determine course command to specified point.
         """
@@ -76,10 +76,10 @@ class nav():
         
         # do atan to get angle between points
         theta = arctan2(de, dn)
-        chi_c = (theta + np.pi) % (2*np.pi) - np.pi
-        if point == 3 and chi_c > 0. and chi_c < np.pi:
-            chi_c = 2*np.pi - chi_c
-
+        chi_c = (theta + 2*np.pi) % (2*np.pi)
+        lchi = (lchi + 2*np.pi) % (2*np.pi)
+        if (chi_c - lchi) < 0 or (chi_c - lchi) > np.pi/2: chi_c = (chi_c - 2*np.pi) % (-2*np.pi)
+        print(np.rad2deg(chi_c))
         return chi_c, h_c, nan, nae
     
     
