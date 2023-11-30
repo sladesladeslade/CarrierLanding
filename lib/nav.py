@@ -31,9 +31,56 @@ class nav():
         
         # do atan to get angle between points
         theta = arctan2(de, dn)
-        chi_c = (theta + np.pi) % (2*np.pi) - np.pi
+        chi_c = (theta + 2*np.pi) % (2*np.pi)
 
         return chi_c
+    
+    
+    def courseToPattern(self, state, car_state, point):
+        """
+        Determine course command to specified point.
+        """
+        # get aircraft position
+        pn = state[0][0]
+        pe = state[1][0]
+        
+        # car pos
+        cn = car_state[0][0]
+        ce = car_state[1][0]
+        
+        # set distance
+        if point == 0:
+            an = 50*sin(self.car_chi)
+            ae = 50*cos(self.car_chi)
+            h_c = 250.
+        elif point == 1:
+            an = 50*sin(self.car_chi) + 500*sin(np.deg2rad(90.) - self.car_chi)
+            ae = 50*cos(self.car_chi) + 500*cos(np.deg2rad(90.) - self.car_chi)
+            h_c = 250.
+        elif point == 2:
+            an = 50*sin(self.car_chi) + 500*sin(np.deg2rad(90.) - self.car_chi) + 650*cos(np.deg2rad(90.) - self.car_chi)
+            ae = 50*cos(self.car_chi) + 500*cos(np.deg2rad(90.) - self.car_chi) - 650*sin(np.deg2rad(90.) - self.car_chi)
+            h_c = 175.
+        elif point == 3:
+            An, Ae = self.approachLoc(car_state)
+            an = An - 600*cos(np.deg2rad(90.) - self.car_chi)
+            ae = Ae - 600*sin(np.deg2rad(90.) - self.car_chi)
+            h_c = 100.
+            
+        # get dists
+        nan = cn + an
+        nae = ce + ae
+        if point == 3: nan = an
+        dn = nan - pn
+        de = nae - pe
+        
+        # do atan to get angle between points
+        theta = arctan2(de, dn)
+        chi_c = (theta + np.pi) % (2*np.pi) - np.pi
+        if point == 3 and chi_c > 0. and chi_c < np.pi:
+            chi_c = 2*np.pi - chi_c
+
+        return chi_c, h_c, nan, nae
     
     
     def courseToCar(self, state, car_state):
