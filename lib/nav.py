@@ -31,7 +31,7 @@ class nav():
         
         # do atan to get angle between points
         theta = arctan2(de, dn)
-        chi_c = (theta + 2*np.pi) % (2*np.pi)
+        chi_c = (theta + np.pi) % (2*np.pi) - np.pi
 
         return chi_c
     
@@ -76,11 +76,11 @@ class nav():
         
         # do atan to get angle between points
         theta = arctan2(de, dn)
-        chi_c = (theta + 2*np.pi) % (2*np.pi)
-        lchi = (lchi + 2*np.pi) % (2*np.pi)
-        if sin(chi_c - lchi) > 0: chi_c = chi_c
-        elif sin(chi_c - lchi) < 0: chi_c = chi_c - 2*np.pi
-        else: chi_c = chi_c
+        chi_c = (theta%(2*np.pi) + 2*np.pi)%(2*np.pi)
+        lchi = (lchi%(2*np.pi) + 2*np.pi)%(2*np.pi)
+        difference = chi_c - lchi
+        chi_c = chi_c - 2*np.pi if difference > np.pi else chi_c
+        print(np.rad2deg(chi_c))
         return chi_c, h_c, nan, nae
     
     
