@@ -84,7 +84,7 @@ class nav():
         return chi_c, h_c, nan, nae
     
     
-    def courseToCar(self, state, car_state):
+    def courseToCar(self, state, car_state, an, ae):
         """
         Determine course command to carrier landing point.
         """
@@ -126,21 +126,36 @@ class nav():
         cmag = np.sqrt((lmag**2)-(dmag**2))
 
         # set approach angle based on perp. distance
-        if cmag >= 150:
-            chi_c = -10*chi_a
-        elif cmag >= 125:
-            chi_c = -8*chi_a
-        elif cmag >= 100:
-            chi_c = -6*chi_a
-        elif cmag >= 50:
-            chi_c = -5*chi_a
-        elif cmag >= 10:
-            chi_c = -3*chi_a
-        elif cmag >= 5:
-            chi_c = -2*chi_a
-        else:
-            chi_c = chi_a
-        
+        if pe > ae:
+            if cmag >= 150:
+                chi_c = -10*chi_a
+            elif cmag >= 125:
+                chi_c = -8*chi_a
+            elif cmag >= 100:
+                chi_c = -6*chi_a
+            elif cmag >= 50:
+                chi_c = -5*chi_a
+            elif cmag >= 10:
+                chi_c = -3*chi_a
+            elif cmag >= 5:
+                chi_c = -2*chi_a
+            else:
+                chi_c = chi_a
+        elif pe < ae:
+            if cmag >= 150:
+                chi_c = 10*chi_a
+            elif cmag >= 125:
+                chi_c = 8*chi_a
+            elif cmag >= 100:
+                chi_c = 6*chi_a
+            elif cmag >= 50:
+                chi_c = 5*chi_a
+            elif cmag >= 10:
+                chi_c = 3*chi_a
+            elif cmag >= 5:
+                chi_c = 2*chi_a
+            else:
+                chi_c = chi_a        
 
 
 
