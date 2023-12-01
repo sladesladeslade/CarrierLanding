@@ -105,7 +105,7 @@ class nav():
             dmag = 0.
         
         # delta d
-        deltad = 0.5*dmag
+        deltad = 0.99*dmag
         
         # actual point to target
         deln = cn - deltad*cos(self.car_chi)
