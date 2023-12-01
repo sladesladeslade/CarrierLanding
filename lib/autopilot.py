@@ -14,9 +14,10 @@ class autopilot():
         self.altitude_state = 0.
         
     
-    def update(self, u, approach=False):
+    def update(self, u, h_land, approach=False, fail=True):
         # get info from the "state" thing
         t, w, phi, theta, chi, p, q, r, Va, h, Va_c, h_c, chi_c, alpha_c, alpha, w_c = u
+        goround = False
         
         ### lateral autopilot ###
         if t == 0 and approach == False:
@@ -41,6 +42,18 @@ class autopilot():
                 self.altitude_state = "Hold"
             self.initialize_integrator = 1
 
+        # check for approach or landing
+        if approach == True:
+            self.altitude_state = "Approach"
+            self.initialize_integrator = 1
+            if h <= h_land:
+                self.altitude_state = "Land"
+                self.initialize_integrator = 1
+            
+        # go around
+        if self.altitude_state == "goaround":
+            self.altitude_state = "Climb"
+        
         # climb
         if self.altitude_state == "Climb":
             # max throttle and hold pitch angle
@@ -100,6 +113,32 @@ class autopilot():
             
             # reset flag
             self.initialize_integrator = 0
+            
+        # landing
+        elif self.altitude_state == "Land":
+            if fail == True:
+                # keep holding alpha
+                delta_e = self.pitch_hold(alpha_c, alpha, q, self.initialize_integrator, self.dt)
+                
+                # cut throttle
+                delta_t = 0.
+                
+                # also get course
+                delta_r = 0.
+                phi_c = self.course_hold(chi_c, chi, r, self.initialize_integrator, self.dt)
+                delta_a = self.roll_hold(0., phi, p, self.initialize_integrator, self.dt)
+                
+                # reset flag
+                self.initialize_integrator = 0
+            elif fail == False:
+                self.altitude_state = "goaround"
+                goround = True
+                delta_r = 0.
+                phi_c = self.course_hold(chi_c, chi, r, self.initialize_integrator, self.dt)
+                delta_a = self.roll_hold(0., phi, p, self.initialize_integrator, self.dt)
+                delta_t = 1.
+                theta_c = self.airspeed_hold_pitch(Va_c, Va, self.initialize_integrator, self.dt)
+                delta_e = self.pitch_hold(theta_c, theta, q, 1, self.dt)    
         
         # set elevator to hold pitch
         if t == 0 and approach == False:
@@ -107,7 +146,7 @@ class autopilot():
         elif approach == False:
             delta_e = self.pitch_hold(theta_c, theta, q, 0, self.dt)
         
-        return delta_e, delta_a, delta_r, delta_t
+        return delta_e, delta_a, delta_r, delta_t, goround
     
     
     def roll_hold(self, phi_c, phi, p, flag, dt):
