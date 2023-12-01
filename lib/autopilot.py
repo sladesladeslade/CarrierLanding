@@ -369,7 +369,7 @@ class autopilot():
             self.w_integrator = self.w_integrator + dt/ki*(u_sat - u)
         
         return u_sat
-
+    
 
     @staticmethod
     def sat(inn, up_limit, low_limit):

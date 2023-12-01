@@ -73,3 +73,4 @@ wn_throttle = 2.2/tr_throttle
 kpa_t = (2*zeta*wn_throttle - a_V1)/a_V2
 kda_t = 0
 kia_t = (wn_throttle**2)/a_V2
+
