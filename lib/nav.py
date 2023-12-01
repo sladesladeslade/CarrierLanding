@@ -84,7 +84,7 @@ class nav():
         return chi_c, h_c, nan, nae
     
     
-    def courseToCar(self, state, car_state, an, ae):
+    def courseToCar(self, state, car_state):
         """
         Determine course command to carrier landing point.
         """
@@ -95,9 +95,6 @@ class nav():
         # get carrier position
         cn, ce, _ = self.landLoc(car_state)
 
-        # get distance between a/c and carrier
-        lmag = np.sqrt(((cn-pn)**2)+((ce-pe)**2))
-        
         # get Q intermediate guy
         Q = ((cos(self.car_chi)*(cn - pn) + sin(self.car_chi)*(ce - pe))/((cn - pn)**2 + (ce - pe)**2))
         
@@ -107,8 +104,8 @@ class nav():
         else:
             dmag = 0.
         
-        # # delta d
-        deltad = dmag
+        # delta d
+        deltad = 0.99*dmag
         
         # actual point to target
         deln = cn - deltad*cos(self.car_chi)
@@ -120,44 +117,7 @@ class nav():
         
         # do atan to get angle between points
         theta = arctan2(de, dn)
-        chi_a = (theta + np.pi)%(2*np.pi) - np.pi
-
-        # perpendicular distance c
-        cmag = np.sqrt((lmag**2)-(dmag**2))
-
-        # set approach angle based on perp. distance
-        if pe > ae:
-            if cmag >= 150:
-                chi_c = -10*chi_a
-            elif cmag >= 125:
-                chi_c = -8*chi_a
-            elif cmag >= 100:
-                chi_c = -6*chi_a
-            elif cmag >= 50:
-                chi_c = -5*chi_a
-            elif cmag >= 10:
-                chi_c = -3*chi_a
-            elif cmag >= 5:
-                chi_c = -2*chi_a
-            else:
-                chi_c = chi_a
-        elif pe < ae:
-            if cmag >= 150:
-                chi_c = 10*chi_a
-            elif cmag >= 125:
-                chi_c = 8*chi_a
-            elif cmag >= 100:
-                chi_c = 6*chi_a
-            elif cmag >= 50:
-                chi_c = 5*chi_a
-            elif cmag >= 10:
-                chi_c = 3*chi_a
-            elif cmag >= 5:
-                chi_c = 2*chi_a
-            else:
-                chi_c = chi_a        
-
-
+        chi_c = (theta + np.pi)%(2*np.pi) - np.pi
 
         return chi_c
         
