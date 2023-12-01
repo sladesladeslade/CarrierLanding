@@ -35,15 +35,15 @@ nav = nav.nav(car_dyn.chi, 1500.)
 t = start_time
 
 # init state
-states0 = np.array([[-100.], #pn
-                  [50.], #pe
+states0 = np.array([[-1500.], #pn
+                  [1000.], #pe
                   [-250.], # pd
                   [50.], # u
                   [0.], # v
                   [0.], # w
                   [0.], # phi
                   [0.], # theta
-                  [0.], # psi
+                  [-np.pi/2], # psi
                   [0.], # p
                   [0.], # q
                   [0.]]) # r
@@ -56,7 +56,7 @@ Va_c = 35.
 w_c = 0.
 theta_c = np.deg2rad(3.)
 chi_c = np.deg2rad(0.)
-h_c = 250.
+h_c = 100.
 ws = []
 ts = []
 appFlag = False
@@ -79,26 +79,23 @@ while t < end_time:
         # check landing status
         if landFlag == False:
             # determine approach position and commanded chi
-            if doApp == True:
-                an, ae = nav.approachLoc(car_dyn.state)
-                if np.abs(pn) <= np.abs(an) + appTol and np.abs(pe) <= np.abs(ae) + appTol and \
-                    np.abs(pn) >= np.abs(an) - appTol and np.abs(pe) >= np.abs(ae) - appTol and goround != True:
-                    appFlag = True
-                    goaround = False
-                    chi_c = nav.courseToCar(ac_dyn.state, car_dyn.state)
-                    landFlag = nav.checkSuccess(car_dyn.state, pn, pe)
-                    cn, ce, ch = nav.landLoc(car_dyn.state)
-                    hland = -ch + 0.75
-                    w_c = calcWreq(car_dyn.state, ac_dyn.state, cn, ce, ch)
-            elif doApp == False:
-                chi_c, h_c, nan, nae = nav.courseToPattern(ac_dyn.state, car_dyn.state, point, chi_a)
-                tol = 50.
+            an, ae = nav.approachLoc(car_dyn.state)
+            if np.abs(pn) <= np.abs(an) + appTol and np.abs(pe) <= np.abs(ae) + appTol and \
+                np.abs(pn) >= np.abs(an) - appTol and np.abs(pe) >= np.abs(ae) - appTol and goround != True:
+                appFlag = True
+                goaround = False
+                chi_c = nav.courseToCar(ac_dyn.state, car_dyn.state)
+                landFlag = nav.checkSuccess(car_dyn.state, pn, pe)
+                cn, ce, ch = nav.landLoc(car_dyn.state)
+                hland = -ch + 0.75
+                w_c = calcWreq(car_dyn.state, ac_dyn.state, cn, ce, ch)
                 apoint.remove()
-                apoint = anim.ax1.scatter(nae, nan, h_c, marker="o", color="red")
-                if np.abs(pn) <= np.abs(nan) + tol and np.abs(pe) <= np.abs(nae) + tol and \
-                    np.abs(pn) >= np.abs(nan) - tol and np.abs(pe) >= np.abs(nae) - tol: point +=1
-                if point >= 4: doApp = True; apoint.remove()
-                print(np.rad2deg(chi_c))
+                apoint = anim.ax1.scatter(ce, cn, hland)
+            elif appFlag == False:
+                apoint.remove()
+                apoint = anim.ax1.scatter(ae, an, 100., marker=".", color="r")
+                chi_c = nav.courseToApproach(ac_dyn.state, car_dyn.state)
+                appFlag = False
         
         # do wind
         Va, alpha, beta = wind.wind_char(ac_dyn.state, Va, ts_simulation)
@@ -114,7 +111,6 @@ while t < end_time:
             chi_c = car_dyn.chi - np.deg2rad(30.)
             landFlag = False
             appFlag = False
-            point = 0
         
         # aero
         fx, fy, fz = ac_aero.forces(ac_dyn.state, delta_e, delta_a, delta_r, delta_t, alpha, beta, Va)
