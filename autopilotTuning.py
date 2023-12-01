@@ -22,7 +22,7 @@ plt.ion()
 
 
 ###### Initialize Misc Classes ######
-anim = anim.animation(100, 0.6)
+anim = anim.animation(50, 0.6)
 ac_dyn = acd.ACdynamics()
 ac_aero = aca.Aero()
 car_dyn = car.carrier_dynamics(0.)
@@ -66,7 +66,6 @@ goround = False
 appTol = 200.
 point = 0
 hland = 0.
-apoint = anim.ax1.scatter(0, 0, 0, marker=".", color="white")
 chi_a = 0.
 
 ## Main Sim Loop ##
@@ -84,16 +83,12 @@ while t < end_time:
                 np.abs(pn) >= np.abs(an) - appTol and np.abs(pe) >= np.abs(ae) - appTol and goround != True:
                 appFlag = True
                 goaround = False
-                chi_c = nav.courseToCar(ac_dyn.state, car_dyn.state)
+                chi_c = nav.courseToCar(ac_dyn.state, car_dyn.state, ae)
                 landFlag = nav.checkSuccess(car_dyn.state, pn, pe)
                 cn, ce, ch = nav.landLoc(car_dyn.state)
                 hland = -ch + 0.75
                 w_c = calcWreq(car_dyn.state, ac_dyn.state, cn, ce, ch)
-                apoint.remove()
-                apoint = anim.ax1.scatter(ce, cn, hland)
             elif appFlag == False:
-                apoint.remove()
-                apoint = anim.ax1.scatter(ae, an, 100., marker=".", color="r")
                 chi_c = nav.courseToApproach(ac_dyn.state, car_dyn.state)
                 appFlag = False
         
