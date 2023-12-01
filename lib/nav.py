@@ -78,8 +78,9 @@ class nav():
         theta = arctan2(de, dn)
         chi_c = (theta + 2*np.pi) % (2*np.pi)
         lchi = (lchi + 2*np.pi) % (2*np.pi)
-        if (chi_c - lchi) < 0 or (chi_c - lchi) > np.pi/2: chi_c = (chi_c - 2*np.pi) % (-2*np.pi)
-        print(np.rad2deg(chi_c))
+        if sin(chi_c - lchi) > 0: chi_c = chi_c
+        elif sin(chi_c - lchi) < 0: chi_c = chi_c - 2*np.pi
+        else: chi_c = chi_c
         return chi_c, h_c, nan, nae
     
     

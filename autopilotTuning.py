@@ -96,8 +96,8 @@ while t < end_time:
                 apoint.remove()
                 apoint = anim.ax1.scatter(nae, nan, h_c, marker="o", color="red")
                 if np.abs(pn) <= np.abs(nan) + tol and np.abs(pe) <= np.abs(nae) + tol and \
-                    np.abs(pn) >= np.abs(nan) - tol and np.abs(pe) >= np.abs(nae) - tol: point +=1; print(point)
-                if point >= 4: doApp = True
+                    np.abs(pn) >= np.abs(nan) - tol and np.abs(pe) >= np.abs(nae) - tol: point +=1
+                if point >= 4: doApp = True; apoint.remove()
         
         # do wind
         Va, alpha, beta = wind.wind_char(ac_dyn.state, Va, ts_simulation)
