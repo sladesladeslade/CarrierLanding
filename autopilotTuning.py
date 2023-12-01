@@ -98,6 +98,7 @@ while t < end_time:
                 if np.abs(pn) <= np.abs(nan) + tol and np.abs(pe) <= np.abs(nae) + tol and \
                     np.abs(pn) >= np.abs(nan) - tol and np.abs(pe) >= np.abs(nae) - tol: point +=1
                 if point >= 4: doApp = True; apoint.remove()
+                print(np.rad2deg(chi_c))
         
         # do wind
         Va, alpha, beta = wind.wind_char(ac_dyn.state, Va, ts_simulation)
@@ -122,7 +123,7 @@ while t < end_time:
         # dynamics
         ac_dyn.update(fx, fy, fz, l, m, n)
         pn, pe, pd, u, v, w, phi, theta, psi, p, q, r = ac_dyn.state.flatten()
-        chi_a = np.arctan2(v, u)
+        chi_a = psi
 
         # anim update
         anim.update(f4_verts, carrier_verts, ac_dyn.state, car_dyn.state, ["b"], ["g"])
