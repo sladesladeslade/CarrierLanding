@@ -1,13 +1,7 @@
-# import sys
-# import os
-# cwd = os.getcwd()
-# sys.path.append(cwd)
+# F-4 Updated Aero Model
+
 import numpy as np
-import time 
-import scipy.linalg as linalg
-from lib.ACparams import *
-import matplotlib.pyplot as plt
-from lib.ACdynamics import ACdynamics
+from lib.F4params import *
 
 class Aero():
 
@@ -24,11 +18,11 @@ class Aero():
         aerodynamic = 0.5*rho*(Va**2)*S_wing*np.array([[self.C_x(alpha) + self.C_xq(alpha)*(c/(2*Va))*q + self.C_xde(alpha)*d_e],
                         [C_Y_0 + C_Y_beta*beta + C_Y_p*(b/(2*Va))*p + C_Y_r*(b/(2*Va))*r + C_Y_delta_a*d_a + C_Y_delta_r*d_r],
                         [self.C_z(alpha) + self.C_zq(alpha)*(c/(2*Va))*q + self.C_zde(alpha)*d_e]])
-        
-        propulsion = 0.5*rho*S_prop*C_prop*np.array([[(k_motor*d_t)**2 - Va**2],
-                                                             [0],
-                                                             [0]])
-        
+
+        propulsion = np.array([[d_t*Fmax],
+                                [0],
+                                [0]])
+
         force = gravitational + aerodynamic + propulsion 
         fx, fy, fz = force.flatten()
 
@@ -44,26 +38,15 @@ class Aero():
                                                        [b*(C_n_0 + C_n_beta*beta + C_n_p*(b/(2*Va))*p + C_n_r*(b/(2*Va))*r +\
                                                             C_n_delta_a*d_a + C_n_delta_r*d_r)]])
         
-        propeller = np.array([[0],
-                              [0],
-                              [0]])
+        l, m, n = aerodynamic.flatten()
         
-        moment = aerodynamic + propeller
-        l, m, n = moment.flatten()
-
         return l, m, n
-
-    @staticmethod
-    def sigma(alpha):
-        eq1 = np.exp(-M*(alpha - alpha0))
-        eq2 = np.exp(M*(alpha - alpha0))
-        return (1 + eq1 + eq2)/((1 + eq1)*(1 + eq2))
     
     # Coefficient fucntions #
     def C_l(self, alpha):
         return C_L_0 + C_L_alpha*alpha
     
-    def C_d(self, alpha): 
+    def C_d(self, alpha):
         return C_D_0 + C_D_alpha*alpha
    
     def C_x(self, alpha):

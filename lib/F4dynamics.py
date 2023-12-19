@@ -1,16 +1,12 @@
-# import sys
-# import os
-# cwd = os.getcwd()
-# sys.path.append(cwd)
 import numpy as np 
 from numpy import sin as s
 from numpy import cos as c
 from numpy import tan as t
-import lib.ACparams as P
+import lib.F4params as P
 import lib.simparams as sp
 
 class ACdynamics:
-    def __init__(self, alpha=0.0):
+    def __init__(self):
         # Initial state conditions
         self.state = P.states0
 

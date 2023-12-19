@@ -1,9 +1,11 @@
-# Autopilot Tuning Stuff File
-# Everyone
-# lets tune this boy
+# Plots
+
 import matplotlib.pyplot as plt
+
 plots = plt.figure("Plots")
 plots.add_subplot
+
+
 import sys
 import os
 cwd = os.getcwd()
@@ -14,34 +16,40 @@ import lib.ACanim as anim
 import lib.ACdynamics as acd
 import lib.ACaero as aca
 import lib.carrier_dynamics as car
-import lib.wind as wind
-from lib.autopilot import autopilot
-from lib.calcWreq import calcWreq
 from obj.hangar import *
-plt.ion()
 import lib.simparams as SIM
 
-###### Initialize Misc Classes ######
-anim = anim.animation(10, 0.5)
+
+# ###### Initialize Misc Classes ######
+anim = anim.animation(100, 0.4)
 ac_dyn = acd.ACdynamics()
 ac_aero = aca.Aero()
-car_dyn = car.carrier_dynamics(0.)
-Vsteady = np.array([[5.], [10.], [0.]])
-wind = wind.wind(Vsteady)
-autop = autopilot(SIM.ts_simulation, 2.)
+car_dyn = car.carrier_dynamics(0)
 
 ACthrottle = plt.figure(1).add_subplot(1, 20, 1); throttlep = ACthrottle.get_position(); throttlep.x0-=0.075; throttlep.x1-=0.075
 ACthrottle.set_position(throttlep)
 ACposition = plt.figure(1).add_subplot(4,3,1)
+# positionp = position.get_position(); positionp.x0 += 0.1; positionp.x1 += 0.075; position.set_position(positionp)
 ACforces = plt.figure(1).add_subplot(4,3,2)
+# forcep = forces.get_position(); forcep.x0 += 0.1; forcep.x1 += 0.075; forces.set_position(forcep)
 carposition = plt.figure(1).add_subplot(4,3,3)
+# positionp = position.get_position(); positionp.x0 += 0.1; positionp.x1 += 0.075; position.set_position(positionp)
 ACangles = plt.figure(1).add_subplot(4,3,4)
+# anglep = angles.get_position(); anglep.x0 += 0.1; anglep.x1 += 0.075; angles.set_position(anglep)
 ACdefl = plt.figure(1).add_subplot(4,3,5)
+# deflp = defl.get_position(); deflp.x0 += 0.1; deflp.x1 += 0.075; defl.set_position(deflp)
 carangles = plt.figure(1).add_subplot(4,3,6)
+# anglep = angles.get_position(); anglep.x0 += 0.1; anglep.x1 += 0.075; angles.set_position(anglep)
 ACvelocity = plt.figure(1).add_subplot(4,3,7)
+# velocityp = velocity.get_position(); velocityp.x0 += 0.1; velocityp.x1 += 0.075; velocity.set_position(velocityp)
 ACmoments = plt.figure(1).add_subplot(4,3,8)
+# momentp = moments.get_position(); momentp.x0 += 0.1; momentp.x1 += 0.075; moments.set_position(momentp)
 carvelocity = plt.figure(1).add_subplot(4,3,9)
+# velocityp = velocity.get_position(); velocityp.x0 += 0.1; velocityp.x1 += 0.075; velocity.set_position(velocityp)
 ACrates = plt.figure(1).add_subplot(4,3,10)
+# ratep = rates.get_position(); ratep.x0 += 0.1; ratep.x1 += 0.075; rates.set_position(ratep)
+
+
 
 # initialize variables for append
 simtime = []
@@ -70,6 +78,7 @@ ACtht = []
 ACdas = []
 ACdes = []
 ACdrs = []
+
 carpns = []
 carpes = []
 carpds = []
@@ -79,8 +88,6 @@ carpsis = []
 carus = []
 carvs = []
 carws = []
-# fig2 = plt.figure("Plots")
-# ax2 = fig2.add_subplot(111)
 
 ## Initalize Sim Time ##
 t = SIM.start_time
@@ -88,74 +95,57 @@ end_time = SIM.end_time
 ts_plotting = SIM.ts_plotting
 ts_simulation = SIM.ts_simulation
 
-
-# init state
-states0 = np.array([[0.], #pn
-                  [0.], #pe
-                  [-25.], # pd
-                  [35.], # u
-                  [0.], # v
-                  [0.], # w
-                  [0.], # phi
-                  [0.], # theta
-                  [0.], # psi
-                  [0.], # p
-                  [0.], # q
-                  [0.]]) # r
-ac_dyn.state = states0
-
-# commanded vals
-Va = 35.
-Va_c = 35.
-theta_c = np.deg2rad(3.)
-chi_c = np.deg2rad(10.)
-h_c = 50.
-ws = []
-ts = []
-
-## Main Sim Loop ##
+# ## Main Sim Loop ##
 while t < end_time:
     t_next_plot = t + ts_plotting
     while t < t_next_plot:
         # update carrier dynamics
-        car_dyn.update(t, False)
-        carpe, carpd, carpn, caru, carv, carw, carphi, cartheta, carpsi, carp, carq, carr= car_dyn.state.flatten()
+        car_dyn.update(t)
         
         # do wind
-        Va, alpha, beta = wind.wind_char(ac_dyn.state, Va, ts_simulation)
-        
-        # AC autopilot
-        ACpn, ACpe, ACpd, ACu, ACv, ACw, ACphi, ACtheta, ACpsi, ACp, ACq, ACr = ac_dyn.state.flatten()
-        # w_c = calcWreq(car_dyn.state, ac_dyn.state)
-        w_c = 0.
-        u = np.array([t, ACw, ACphi, ACtheta, ACpsi, ACp, ACq, ACr, Va, -ACpd, Va_c, h_c, chi_c, theta_c, ACtheta, w_c])
-        ACdelta_e, ACdelta_a, ACdelta_r, ACdelta_t = autop.update(u, False)
-        # print(np.rad2deg(np.arctan(ACpe/ACpn)))
-        # ws.append(np.rad2deg(np.arctan(pe/pn)))
-        # ts.append(t)
-        
+        ACfx = 0.
+        ACfy = 10.
+        ACfz = 50.
+        ACl = 1.
+        ACm = 1.
+        ACn = 1.
+        ACdeltat = 1.
+        ACpn = 1 + t
+        ACpe = 2.
+        ACpd = 5.
+        ACu = 1.
+        ACv = 2.
+        ACw = 3.
+        ACphi = np.sin(10)
+        ACtheta = np.cos(10)
+        ACpsi = np.tan(10)
+        ACp = 1.
+        ACq = 2.
+        ACr = 3.
+        ACdeltaa = 1.
+        ACdeltae = 2.
+        ACdeltar = 3.
+
+        # autopilot
+        carpn = 1 + t
+        carpe = 0.
+        carpd = 0.
+        carphi = np.sin(10)
+        cartheta = np.sin(50)
+        carpsi = np.cos(10)
+        caru = 1.
+        carv = 2.
+        carw = 3.
         # aero
-        ACfx, ACfy, ACfz = ac_aero.forces(ac_dyn.state, ACdelta_e, ACdelta_a, ACdelta_r, ACdelta_t, alpha, beta, Va)
-        ACl, ACm, ACn = ac_aero.moments(ac_dyn.state, ACdelta_e, ACdelta_a, ACdelta_r, ACdelta_t, alpha, beta, Va)
         
-        # AC dynamics
-        ac_dyn.update(ACfx, ACfy, ACfz, ACl, ACm, ACn)
-        # pn, pe, pd, u, v, w, phi, theta, psi, p, q, r = ac_dyn.state.flatten()
+        # dynamics
 
         # anim update
-        anim.update(f4_verts, carrier_verts, ac_dyn.state, car_dyn.state, ["b"], ["g"])
+        
         
         # iterate time
         t += ts_simulation
         
-    # do plotting
-    # ax2.clear()
-    # ax2.plot(ts, ws)
-    # ax2.hlines(np.rad2deg(chi_c), 0, ts[-1], "r", linestyle="--")
-    
-    # check for keybaord press
-    
-    # do plotting
     # do plotting for aircraft
     simtime.append(t)
     ACfxs.append(ACfx)
@@ -164,7 +154,7 @@ while t < end_time:
     ACls.append(ACl)
     ACms.append(ACm)
     ACns.append(ACn)
-    ACtht.append(ACdelta_t)
+    ACtht.append(ACdeltat)
     ACpns.append(ACpn)
     ACpes.append(ACpe)
     ACpds.append(ACpd)
@@ -177,9 +167,9 @@ while t < end_time:
     ACps.append(ACp)
     ACqs.append(ACq)
     ACrs.append(ACr)
-    ACdas.append(ACdelta_a)
-    ACdes.append(ACdelta_e)
-    ACdrs.append(ACdelta_r)
+    ACdas.append(ACdeltaa)
+    ACdes.append(ACdeltae)
+    ACdrs.append(ACdeltar)
 
     # do plotting for carrier
     carpns.append(carpn)
@@ -204,7 +194,7 @@ while t < end_time:
     carposition.clear()
     carangles.clear()
     carvelocity.clear()
-    ACthrottle.bar(0, ACdelta_t)
+    ACthrottle.bar(0, ACdeltat)
     ACangles.plot(simtime, np.rad2deg(ACphis), "g-", label="$\phi$")
     ACangles.plot(simtime, np.rad2deg(ACthetas), "r-", label="$\ttheta$")
     ACangles.plot(simtime, np.rad2deg(ACpsis), "b-", label="$\psi$")
@@ -237,7 +227,6 @@ while t < end_time:
     carvelocity.plot(simtime, carws, "b-", label="w")
     ACthrottle.set_ylabel('Throttle')
     ACthrottle.set_ylim(0, 1)
-    ACthrottle.tick_params(axis='y', which='both', left=False, right=False)
     ACangles.grid('major')
     ACangles.set_ylabel('Angle (deg)')
     ACangles.legend(loc='upper right')
@@ -254,10 +243,8 @@ while t < end_time:
     ACposition.grid('major')
     ACposition.set_ylabel('Position (m)')
     ACposition.legend(loc='upper right')
-    ACposition.set_title('Aircraft Dynamics')
     carposition.grid('major')
     carposition.set_ylabel('Position (m)')
-    carposition.set_title('Carrier Dynamics')
     carposition.legend(loc='upper right')
     ACrates.grid('major')
     ACrates.set_ylabel('Ang Velocity (deg/s)')
